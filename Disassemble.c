@@ -4,20 +4,23 @@
 
 typedef struct opAssembler
 {
-	char instruction[8];
-	int bytes;
+	char instruction[10];
+	char bytes;
+	char type;
 	char isValid[6];
 } opAssembler;
 
 int main()
 {
 	
-	struct opAssembler command[255];
+	struct opAssembler command[255], extraCommand[255];
 	unsigned char getStart[5], getEnd[5];
-	unsigned char data, data1, data2;
-	char temp[10], temp1[5], temp2[5];
-	unsigned char i, *addStart, *addEnd;
-	unsigned int addRange;
+	unsigned char n, data, data1, data2, flagData;
+	char temp[10], temp1[10], temp2[10];
+	unsigned char *addStart, *addEnd;
+	unsigned int addRange, addTemp;
+	long int i;
+	/*unsigned char testData[100];*/ /*for example*/
 
 	/*Initialse data*/
 	strcpy(command[0x1B].instruction,"ABA ");
@@ -26,11 +29,12 @@ int main()
 	
 	strcpy(command[0x3A].instruction,"ABX ");
 	command[0x3A].bytes = 0;
+	command[0x3A].type = 18;
 	strcpy(command[0x3A].isValid, "Valid");
 		
-	/*strcpy(command[0x183A].instruction,"ADCA ");
-	command[0x183A].bytes = 0;
-	strcpy(command[0x183A].isValid, "Valid");*/
+	strcpy(extraCommand[/*0xFF+*/0x3A].instruction,"ABY "); /*18 Type*/
+	extraCommand[0x3A].bytes = 0;
+	strcpy(extraCommand[0x3A].isValid, "Valid");
 		
 	strcpy(command[0x89].instruction,"ADCA #$");
 	command[0x89].bytes = 1; /*Usually*/
@@ -44,13 +48,14 @@ int main()
 	command[0xB9].bytes = 2;
 	strcpy(command[0xB9].isValid, "Valid");
 		
-	strcpy(command[0xA9].instruction,"ADCA $");
+	strcpy(command[0xA9].instruction,"ADCA,X $");
 	command[0xA9].bytes = 1;
+	command[0xA9].type = 18;
 	strcpy(command[0xA9].isValid, "Valid");
 		
-	/*strcpy(command[0x18A9].instruction,"ADCA $");
-	command[0x18A9].bytes = 1;
-	strcpy(command[0x18A9].isValid, "Valid");*/
+	strcpy(extraCommand[0xA9].instruction,"ADCA,Y $"); /*18 Type*/
+	extraCommand[0xA9].bytes = 1;
+	strcpy(extraCommand[0xA9].isValid, "Valid");
 		
 	strcpy(command[0xC9].instruction,"ADCB #$");
 	command[0xC9].bytes = 1; /*Usually*/
@@ -64,13 +69,14 @@ int main()
 	command[0xF9].bytes = 2;
 	strcpy(command[0xF9].isValid, "Valid");
 		
-	strcpy(command[0xE9].instruction,"ADCB $");
+	strcpy(command[0xE9].instruction,"ADCB,X $");
 	command[0xE9].bytes = 1;
+	command[0xE9].type = 18;
 	strcpy(command[0xE9].isValid, "Valid");
 		
-	/*strcpy(command[0x18E9].instruction,"ADCB $");
-	command[0x18E9].bytes = 1;
-	strcpy(command[0x18E9].isValid, "Valid");*/
+	strcpy(extraCommand[0xE9].instruction,"ADCB,Y $"); /*18 Type*/
+	extraCommand[0xE9].bytes = 1;
+	strcpy(extraCommand[0xE9].isValid, "Valid");
 		
 	strcpy(command[0x8B].instruction,"ADDA #$");
 	command[0x8B].bytes = 1; /*Usually*/
@@ -84,13 +90,14 @@ int main()
 	command[0xBB].bytes = 2;
 	strcpy(command[0xBB].isValid, "Valid");
 		
-	strcpy(command[0xAB].instruction,"ADDA $");
+	strcpy(command[0xAB].instruction,"ADDA,X $");
 	command[0xAB].bytes = 1;
+	command[0xAB].type = 18;
 	strcpy(command[0xAB].isValid, "Valid");
 		
-	/*strcpy(command[0x18AB].instruction,"ADDA $");
-	command[0x18AB].bytes = 1;
-	strcpy(command[0x18AB].isValid, "Valid");*/
+	strcpy(extraCommand[0xAB].instruction,"ADDA,Y $"); /*18 Type*/
+	extraCommand[0xAB].bytes = 1;
+	strcpy(extraCommand[0xAB].isValid, "Valid");
 		
 	strcpy(command[0xCB].instruction,"ADDB #$");
 	command[0xCB].bytes = 1; /*Usually*/
@@ -104,13 +111,14 @@ int main()
 	command[0xFB].bytes = 2;
 	strcpy(command[0xFB].isValid, "Valid");
 		
-	strcpy(command[0xEB].instruction,"ADDB $");
+	strcpy(command[0xEB].instruction,"ADDB,X $");
 	command[0xEB].bytes = 1;
+	command[0xEB].type = 18;
 	strcpy(command[0xEB].isValid, "Valid");
 		
-	/*strcpy(command[0x18EB].instruction,"ADDB $");
-	command[0x18EB].bytes = 1;
-	strcpy(command[0x18EB].isValid, "Valid");*/
+	strcpy(extraCommand[0xEB].instruction,"ADDB,Y $"); /*18 Type*/
+	extraCommand[0xEB].bytes = 1;
+	strcpy(extraCommand[0xEB].isValid, "Valid");
 		
 	strcpy(command[0xC3].instruction,"ADDD #$");
 	command[0xC3].bytes = 2;
@@ -124,13 +132,14 @@ int main()
 	command[0xF3].bytes = 2;
 	strcpy(command[0xF3].isValid, "Valid");
 	
-	strcpy(command[0xE3].instruction,"ADDD $");
+	strcpy(command[0xE3].instruction,"ADDD,X $");
 	command[0xE3].bytes = 1;
+	command[0xE3].type = 18;
 	strcpy(command[0xE3].isValid, "Valid");
 	
-	/*strcpy(command[0x18E3].instruction,"ADDD $");
-	command[0x18E3].bytes = 1;
-	strcpy(command[0x18E3].isValid, "Valid");*/
+	strcpy(extraCommand[0xE3].instruction,"ADDD,Y $"); /*18 Type*/
+	extraCommand[0xE3].bytes = 1;
+	strcpy(extraCommand[0xE3].isValid, "Valid");
 	
 	strcpy(command[0x80].instruction,"SUBA #$");
 	command[0x80].bytes = 1; /*Usually*/
@@ -144,13 +153,14 @@ int main()
 	command[0xB0].bytes = 2;
 	strcpy(command[0xB0].isValid, "Valid");
 	
-	strcpy(command[0xA0].instruction,"SUBA $");
+	strcpy(command[0xA0].instruction,"SUBA,X $");
 	command[0xA0].bytes = 1;
+	command[0xA0].type = 18;
 	strcpy(command[0xA0].isValid, "Valid");
 	
-	/*strcpy(command[0x18A0].instruction,"SUBA $");
-	command[0x18A0].bytes = 1;
-	strcpy(command[0x18A0].isValid, "Valid");*/
+	strcpy(extraCommand[0xA0].instruction,"SUBA,Y $"); /*18 Type*/
+	extraCommand[0xA0].bytes = 1;
+	strcpy(extraCommand[0xA0].isValid, "Valid");
 	
 	strcpy(command[0xC0].instruction,"SUBB #$");
 	command[0xC0].bytes = 1; /*Usually*/
@@ -164,13 +174,14 @@ int main()
 	command[0xF0].bytes = 2;
 	strcpy(command[0xF0].isValid, "Valid");
 	
-	strcpy(command[0xE0].instruction,"SUBB $");
+	strcpy(command[0xE0].instruction,"SUBB,X $");
 	command[0xE0].bytes = 1;
+	command[0xE0].type = 18;
 	strcpy(command[0xE0].isValid, "Valid");
 	
-	/*strcpy(command[0x18E0].instruction,"SUBB $");
-	command[0x18E0].bytes = 1;
-	strcpy(command[0x18E0].isValid, "Valid");*/
+	strcpy(extraCommand[0xE0].instruction,"SUBB,Y $"); /*18 Type*/
+	extraCommand[0xE0].bytes = 1;
+	strcpy(extraCommand[0xE0].isValid, "Valid");
 	
 	strcpy(command[0x83].instruction,"SUBD #$");
 	command[0x83].bytes = 2;
@@ -184,13 +195,14 @@ int main()
 	command[0xB3].bytes = 2;
 	strcpy(command[0xB3].isValid, "Valid");
 	
-	strcpy(command[0xA3].instruction,"SUBD $");
+	strcpy(command[0xA3].instruction,"SUBD,X $");
 	command[0xA3].bytes = 1;
+	command[0xA3].type = 18;
 	strcpy(command[0xA3].isValid, "Valid");
 	
-	/*strcpy(command[0x18A3].instruction,"SUBD $");
-	command[0x18A3].bytes = 1;
-	strcpy(command[0x18A3].isValid, "Valid");*/
+	strcpy(extraCommand[0xA3].instruction,"SUBD,Y $"); /*18 Type*/
+	extraCommand[0xA3].bytes = 1;
+	strcpy(extraCommand[0xA3].isValid, "Valid");
 	
 	strcpy(command[0x86].instruction,"LDAA #$");
 	command[0x86].bytes = 1; /*Usually*/
@@ -204,13 +216,14 @@ int main()
 	command[0xB6].bytes = 2;
 	strcpy(command[0xB6].isValid, "Valid");
 	
-	strcpy(command[0xA6].instruction,"LDAA $");
+	strcpy(command[0xA6].instruction,"LDAA,X $");
 	command[0xA6].bytes = 1;
+	command[0xA6].type = 18;
 	strcpy(command[0xA6].isValid, "Valid");
 	
-	/*strcpy(command[0x18A6].instruction,"LDAA $");
-	command[0x18A6].bytes = 1;
-	strcpy(command[0x18A6].isValid, "Valid");
+	strcpy(extraCommand[0xA6].instruction,"LDAA,Y $"); /*18 Type*/
+	extraCommand[0xA6].bytes = 1;
+	strcpy(extraCommand[0xA6].isValid, "Valid");
 	
 	strcpy(command[0xC6].instruction,"LDAB #$");
 	command[0xC6].bytes = 2; /*Usually*/
@@ -224,13 +237,14 @@ int main()
 	command[0xF6].bytes = 2;
 	strcpy(command[0xF6].isValid, "Valid");
 	
-	strcpy(command[0xE6].instruction,"LDAB $");
+	strcpy(command[0xE6].instruction,"LDAB,X $");
 	command[0xE6].bytes = 1;
+	command[0xE6].type = 18;
 	strcpy(command[0xE6].isValid, "Valid");
 	
-	/*strcpy(command[0x18E6].instruction,"LDAB $");
-	command[0x18E6].bytes = 1;
-	strcpy(command[0x18E6].isValid, "Valid");*/
+	strcpy(extraCommand[0xE6].instruction,"LDAB,Y $"); /*18 Type*/
+	extraCommand[0xE6].bytes = 1;
+	strcpy(extraCommand[0xE6].isValid, "Valid");
 	
 	strcpy(command[0xCC].instruction,"LDD #$");
 	command[0xCC].bytes = 2;
@@ -244,13 +258,14 @@ int main()
 	command[0xFC].bytes = 2;
 	strcpy(command[0xFC].isValid, "Valid");
 	
-	strcpy(command[0xEC].instruction,"LDD $");
+	strcpy(command[0xEC].instruction,"LDD,X $");
 	command[0xEC].bytes = 1;
+	command[0xEC].type = 18;
 	strcpy(command[0xEC].isValid, "Valid");
 	
-	/*strcpy(command[0x18EC].instruction,"LDD $");
-	command[0x18EC].bytes = 1;
-	strcpy(command[0x18EC].isValid, "Valid");*/
+	strcpy(extraCommand[0xEC].instruction,"LDD,Y $"); /*18 Type*/
+	extraCommand[0xEC].bytes = 1;
+	strcpy(extraCommand[0xEC].isValid, "Valid");
 	
 	strcpy(command[0x97].instruction,"STAA $");
 	command[0x97].bytes = 2; /*Top 8 bits assumed 00*/
@@ -260,13 +275,14 @@ int main()
 	command[0xB7].bytes = 2;
 	strcpy(command[0xB7].isValid, "Valid");
 	
-	strcpy(command[0xA7].instruction,"STAA $");
+	strcpy(command[0xA7].instruction,"STAA,X $");
 	command[0xA7].bytes = 1;
+	command[0xA7].type = 18;
 	strcpy(command[0xA7].isValid, "Valid");
 	
-	/*strcpy(command[0x18A7].instruction,"STAA $");
-	command[0x18A7].bytes = 1;
-	strcpy(command[0x18A7].isValid, "Valid");*/
+	strcpy(extraCommand[0xA7].instruction,"STAA,Y $"); /*18 Type*/
+	extraCommand[0xA7].bytes = 1;
+	strcpy(extraCommand[0xA7].isValid, "Valid");
 	
 	strcpy(command[0xD7].instruction,"STAB $");
 	command[0xD7].bytes = 2; /*Top 8 bits assumed 00*/
@@ -276,13 +292,14 @@ int main()
 	command[0xF7].bytes = 2;
 	strcpy(command[0xF7].isValid, "Valid");
 	
-	strcpy(command[0xE7].instruction,"STAB $");
+	strcpy(command[0xE7].instruction,"STAB,X $");
 	command[0xE7].bytes = 1;
+	command[0xE7].type = 18;
 	strcpy(command[0xE7].isValid, "Valid");
 	
-	/*strcpy(command[0x18E7].instruction,"STAB $");
-	command[0x18E7].bytes = 1;
-	strcpy(command[0x18E7].isValid, "Valid");*/
+	strcpy(extraCommand[0xE7].instruction,"STAB,Y $"); /*18 Type*/
+	extraCommand[0xE7].bytes = 1;
+	strcpy(extraCommand[0xE7].isValid, "Valid");
 	
 	strcpy(command[0xDD].instruction,"STD $");
 	command[0xDD].bytes = 1;
@@ -292,49 +309,57 @@ int main()
 	command[0xFD].bytes = 2;
 	strcpy(command[0xFD].isValid, "Valid");
 	
-	strcpy(command[0xED].instruction,"STD $");
+	strcpy(command[0xED].instruction,"STD,X $");
 	command[0xED].bytes = 1;
+	command[0xED].type = 18;
 	strcpy(command[0xED].isValid, "Valid");
 	
-	/*strcpy(command[0x18ED].instruction,"STD $");
-	command[0x18ED].bytes = 1;
-	strcpy(command[0x18ED].isValid, "Valid");*/
+	strcpy(extraCommand[0xED].instruction,"STD,Y $"); /*18 Type*/
+	extraCommand[0xED].bytes = 1;
+	strcpy(extraCommand[0xED].isValid, "Valid");
 	
 
 	/*Get the disassembler paramters*/
 	printf("Please enter a start address: ");
-	gets(getStart); /*Obtain user entered address - 3000 and after seems clear*/
-	sscanf(getStart, "%x", &addStart); /*assign input to addvalue*/
-	printf("\n\rAddress obtained: %x, %d\n\r", addStart, addStart);
+	gets(getStart); /*Obtain user entered address*/
+	printf("\n\rString obtained: %s\n\r", getStart);
+	sscanf(getStart, "%x", &addTemp); /*assign input to addvalue*/
+	printf("\n\rAddress obtained: %x, %d\n\r", addTemp, addTemp);
+	addStart = (unsigned char *)addTemp;
 	
 	printf("Please enter an end address: ");
-	gets(getEnd); /*Obtain user entered address - 3000 and after seems clear*/
-	sscanf(getEnd, "%x", &addEnd); /*assign input to addvalue*/
-	printf("\n\rAddress obtained: %x, %d\n\r", addEnd, addEnd);
+	gets(getEnd); /*Obtain user entered address*/
+	printf("\n\rString obtained: %s\n\r", getEnd);
+	sscanf(getEnd, "%x", &addTemp); /*assign input to addvalue*/
+	printf("\n\rAddress obtained: %x, %d\n\r", addTemp, addTemp);
+	addEnd = (unsigned char *)addTemp;
 	
 	/*get opcode*/
 	addRange = addEnd - addStart;
-	printf("Range = %d\n\r", addRange);
-	
+	printf("Range =Hex: %x, Dec: %d\n\r", addRange, addRange);
+	n = 0;
 	for(i = 0; i < addRange+1; i++)
 	{
-		/*Clear the strings*/
+		/*Clear the strings and flags*/
 		temp[0] = '\0';
 		temp1[0] = '\0';
 		temp2[0] = '\0';
 		
 		data = *addStart;
 		printf("\n\rAddress: %x, Data: %02x,", addStart, data);
-		
-		if (data == 0x18)
-		{
-			printf("\n\r18 FOUND\n\r");
-		}
-		
+		flagData = *(addStart+1);
+	
 		/*look up string*/
 		if (strcmp(command[data].isValid, "Valid") == 0) /*Check valid tab*/
 		{
-			strcpy(temp, command[data].instruction);
+			if (command[data].type == 18 && flagData == 0x18)
+			{
+				strcpy(temp, extraCommand[data].instruction);
+			}
+			else
+			{
+				strcpy(temp, command[data].instruction);
+			}
 				
 			/*look up number of bytes next*/
 			if (command[data].bytes == 2)
@@ -346,8 +371,8 @@ int main()
 				strcat(temp1, temp2);
 				i++;
 				i++;
-				*addStart++;
-				*addStart++;
+				addStart++;
+				addStart++;
 			}
 			
 			if (command[data].bytes == 1)
@@ -355,14 +380,22 @@ int main()
 				data1 = *(addStart+1);
 				sprintf(temp1, "%02x", data1);
 				i++;
-				*addStart++;
+				addStart++;
 			}
 		
 			strcat(temp,temp1);
 			printf("\tCommand: %s", temp);
 			
 		}
-		*addStart++;
+		addStart++;
+		
+		/*Page break here*/
+		n++;
+		if (n == 10)
+		{
+			printf("\n\rThe ten is working.\n\r");
+			n = 0;
+		}
 	}
 }
 
