@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
+unsigned char mkeyscan();
+
 typedef struct opAssembler
 {
 	char instruction[10];
@@ -15,7 +17,7 @@ int main()
 	
 	struct opAssembler command[255], extraCommand[255];
 	unsigned char getStart[5], getEnd[5];
-	unsigned char n, data, data1, data2, flagData;
+	unsigned char n, data, data1, data2, flagData, wait;
 	char temp[10], temp1[10], temp2[10];
 	unsigned char *addStart, *addEnd;
 	unsigned int addRange, addTemp;
@@ -338,6 +340,7 @@ int main()
 	addRange = addEnd - addStart;
 	printf("Range =Hex: %x, Dec: %d\n\r", addRange, addRange);
 	n = 0;
+	
 	for(i = 0; i < addRange+1; i++)
 	{
 		/*Clear the strings and flags*/
@@ -391,15 +394,33 @@ int main()
 		
 		/*Page break here*/
 		n++;
-		if (n == 10)
+		if (n == 15)
 		{
-			printf("\n\rThe ten is working.\n\r");
+			printf("\n\n\r%ld/%u addresses displayed. Press any key to continue.\n\r", (i), (addRange));
+			wait = '\0';
+			while (wait == '\0')
+			{
+				wait = mkeyscan();
+			}
 			n = 0;
 		}
 	}
 }
 
-
+unsigned char mkeyscan()
+{
+	unsigned char *scsr, *scdr, data;
+	/* Note no config needed for baud rate since already defined in monitor program*/
+	scsr = (unsigned char *)0x2e;
+	scdr = (unsigned char *)0x2f;
+	data = '\0';
+	/* if key has been pressed read key code else return NULL */
+	if (((*scsr) & 0x20) != 0x0)
+	{
+		data = *scdr;
+	}
+	return(data);
+}
 
 
 
