@@ -22,7 +22,6 @@ int main()
 	unsigned char *addStart, *addEnd;
 	unsigned int addRange, addTemp;
 	long int i;
-	/*unsigned char testData[100];*/ /*for example*/
 
 	/*Initialse data*/
 	strcpy(command[0x1B].instruction,"ABA ");
@@ -34,7 +33,7 @@ int main()
 	command[0x3A].type = 18;
 	strcpy(command[0x3A].isValid, "Valid");
 		
-	strcpy(extraCommand[/*0xFF+*/0x3A].instruction,"ABY "); /*18 Type*/
+	strcpy(extraCommand[0x3A].instruction,"ABY "); /*18 Type*/
 	extraCommand[0x3A].bytes = 0;
 	strcpy(extraCommand[0x3A].isValid, "Valid");
 		
@@ -321,7 +320,7 @@ int main()
 	strcpy(extraCommand[0xED].isValid, "Valid");
 	
 
-	/*Get the disassembler paramters*/
+	/*Get the disassemble address paramters*/
 	printf("Please enter a start address: ");
 	gets(getStart); /*Obtain user entered address*/
 	printf("\n\rString obtained: %s\n\r", getStart);
@@ -336,10 +335,11 @@ int main()
 	printf("\n\rAddress obtained: %x, %d\n\r", addTemp, addTemp);
 	addEnd = (unsigned char *)addTemp;
 	
-	/*get opcode*/
+	/*Set the max range and prep for the loop*/
 	addRange = addEnd - addStart;
-	printf("Range =Hex: %x, Dec: %d\n\r", addRange, addRange);
+	printf("Range Hex: %x, Dec: %d\n\r", addRange, addRange);
 	n = 0;
+	printf("\n\rAddress\tHex Data\tAssembly\n\r");
 	
 	for(i = 0; i < addRange+1; i++)
 	{
@@ -349,20 +349,35 @@ int main()
 		temp2[0] = '\0';
 		
 		data = *addStart;
-		printf("\n\rAddress: %x, Data: %02x,", addStart, data);
+		printf("\n\r%x\t%02x", addStart, data);
 		flagData = *(addStart+1);
+	
+		if (data == 0x18 && command[flagData].type == 18)
+		{
+			strcpy(temp, extraCommand[flagData].instruction); /*write 0x18 data to temp*/
+			data1 = *(addStart+1); /*get opcode*/
+			sprintf(temp1, "%02x", data1); /*write opcode to temp1*/
+			
+			if(command[flagData].bytes == 1) /*Get extra data if a byte should be attached*/
+			{
+				data2 = *(addStart+2); /*get attached byte - all 0x18 codes are 1 byte*/
+				sprintf(temp2, "%02x", data2); /*byte written to temp2*/
+				strcat(temp1, temp2); /*data concatenated*/
+				i++; /*iterate past retrieved addresses*/
+				addStart++;
+			}
+			
+			i++; /*iterate past remaining addresses*/
+			addStart++;
+			
+			/*strcat(temp1, temp);*/
+			printf("%s\t\t%s%s", temp1, temp, temp1);
+		}
 	
 		/*look up string*/
 		if (strcmp(command[data].isValid, "Valid") == 0) /*Check valid tab*/
 		{
-			if (command[data].type == 18 && flagData == 0x18)
-			{
-				strcpy(temp, extraCommand[data].instruction);
-			}
-			else
-			{
 				strcpy(temp, command[data].instruction);
-			}
 				
 			/*look up number of bytes next*/
 			if (command[data].bytes == 2)
@@ -386,8 +401,8 @@ int main()
 				addStart++;
 			}
 		
-			strcat(temp,temp1);
-			printf("\tCommand: %s", temp);
+			/*strcat(temp1, temp);*/
+			printf("%s\t\t%s%s", temp1, temp, temp1);
 			
 		}
 		addStart++;
@@ -396,13 +411,14 @@ int main()
 		n++;
 		if (n == 15)
 		{
-			printf("\n\n\r%ld/%u addresses displayed. Press any key to continue.\n\r", (i), (addRange));
+			printf("\n\n\r%ld/%u addresses displayed. Press any key to continue.\n\r", (i+1), addRange);
 			wait = '\0';
 			while (wait == '\0')
 			{
 				wait = mkeyscan();
 			}
 			n = 0;
+			printf("\n\rAddress\tHex Data\tAssembly\n\r");
 		}
 	}
 }
