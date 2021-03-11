@@ -48,7 +48,7 @@
 	ldd	$38;
 	ldd	$393a;
 	ldd	$3b,x;
-	ldd $3c,y;	0x18 code
+	ldd	$3c,y;	0x18 code
 	staa	$3d;
 	staa	$3e3f;
 	staa	$40,x;
