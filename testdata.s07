@@ -14,6 +14,11 @@
 	adda	$0f10;
 	adda	$11,x;
 	adda    $12,y;	0x18 code
+	addb	#$ff;
+	addb	$fe;
+	addb	$fdfc;
+	addb	$fb,x;
+	addb	$fa,y;	0x18 code
 	addd	#$dd13;
 	addd	$14;
 	addd	$1516;
