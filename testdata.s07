@@ -1,66 +1,67 @@
 	org	$4600;
 	adca	#$01;
-	adca	$0002;
+	adca	$02;
 	adca	$0304;
 	adca	$05,x;
-	adca	$06,y;
+	adca    $06,y;	0x18 code
 	adcb	#$07;
-	adcb	$0008;
+	adcb	$08;
 	adcb	$090a;
 	adcb	$0b,x;
-	adcb	$0c,y;
+	adcb    $0c,y;	0x18 code
 	adda	#$0d;
-	adda	$000e;
+	adda	$0e;
 	adda	$0f10;
 	adda	$11,x;
-	adda	$12,y;
+	adda    $12,y;	0x18 code
 	addd	#$dd13;
 	addd	$14;
 	addd	$1516;
 	addd	$17,x;
-	addd	$18,y;
+	addd    $18,y;	0x18 code
 	suba	#$19;
-	suba	$001a;
+	suba	$1a;
 	suba	$1b1c;
 	suba	$1d,x;
-	suba	$1e,y;
+	suba    $1e,y;	0x18 code
 	subb	#$1f;
-	subb	$0020;
+	subb	$20;
 	subb	$2122;
 	subb	$23,x;
-	subb	$24,y;
+	subb    $24,y;	0x18 code
 	subd	#$dd25;
 	subd	$26;
 	subd	$2728;
 	subd	$29,x;
-	subd	$2a,y;
+	subd    $2a,y;	0x18 code
 	ldaa	#$2b;
-	ldaa	$002c;
+	ldaa	$2c;
 	ldaa	$2d2e;
 	ldaa	$2f,x;
-	ldaa	$30,y;
+	ldaa    $30,y;	0x18 code
 	ldab	#$31;
-	ldab	$0032;
+	ldab	$32;
 	ldab	$3334;
 	ldab	$35,x;
-	ldab	$36,y;
+	ldab    $36,y;	0x18 code
 	ldd	#$dd37;
 	ldd	$38;
 	ldd	$393a;
 	ldd	$3b,x;
-	ldd	$3c,y;
-	staa	$003d;
+	ldd $3c,y;	0x18 code
+	staa	$3d;
 	staa	$3e3f;
 	staa	$40,x;
-	staa	$41,y;
+	staa    $41,y;	0x18 code
 	stab	$0042;
 	stab	$4344;
 	stab	$45,x;
-	stab	$46,y;
-	std	$0047;
+	stab    $46,y;	0x18 code
+	std	$47;
 	std	$4849;
 	std	$4a,x;
-	std	$4b,y;
+	std	$4b,y;	0x18 code
 	aba
 	abx
 	aby
+	END
