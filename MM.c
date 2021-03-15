@@ -21,18 +21,27 @@ int main()
 	
 	printf("Please enter your new values. Use '.' to exit.\n\r");
 	printf("Address\tHex Data\n\n\r");
-	while(1){
+	
+	while(1) {
 		/*Acquire data and print with address*/
 		data = *address;
 		printf("%04x:\t%02x <- ", address, data);
 		
 		/*Acquire new value and check for break*/
+		newData[0] = '\n'; /*Set default input to return line skip*/
+		newData[1] = '\0';
 		gets(newData);
 		sscanf(newData, "%c", &isBreak);
+		printf("%c, %x\n\r", isBreak);
 		if (isBreak == '.')
 		{
 			break;
 		}
+		if (isBreak == '\n')
+		{
+			/*Skip to next address*/
+		}
+		if 
 		else
 		{
 			/*Write new value to address and increment until break*/
