@@ -5,9 +5,9 @@
 int main()
 {
 	
-	unsigned char getAddress[5];
+	unsigned char getAddress[10];
 	unsigned char data, isBreak;
-	char newData[3];
+	char newData[5];
 	unsigned char *address;
 	unsigned int addTemp, data1;
 
@@ -29,10 +29,10 @@ int main()
 		
 		/*Acquire new value and check for break*/
 		newData[0] = '\n'; /*Set default input to return line skip*/
-		newData[1] = '\0';
+		newData[1] = '\0'; /*Suppose null unless overwritten*/
+		newData[2] = '\0'; /*Re-write null in case of overwrite later*/
 		gets(newData);
 		sscanf(newData, "%c", &isBreak);
-		printf("%c, %x\n\r", isBreak);
 		if (isBreak == '.')
 		{
 			break;
@@ -40,14 +40,37 @@ int main()
 		if (isBreak == '\n')
 		{
 			/*Skip to next address*/
+			address+= 1;
 		}
-		if 
 		else
 		{
-			/*Write new value to address and increment until break*/
-			sscanf(newData, "%02x", &data1);
-			*address = data1;
+			if (newData[1] == '\0')
+			{
+				if (isxdigit(newData[0]) == 0 || newData[0] == ' ')
+				{
+					printf("Please enter a valid 8 bit hexadecimal value.\n\r");
+				}
+				else
+				{
+					sscanf(newData, "%02x", &data1);
+					*address = data1;
+					address+= 1;
+				}
+			}
+			else
+			{
+				if (isxdigit(newData[0]) == 0 || isxdigit(newData[1]) == 0 || newData[0] == ' ' || newData[1] == ' ' || newData[2] != '\0')
+				{
+					printf("Please enter a correct 8 bit hexadecimal value.\n\r");
+				}
+				else
+				{
+					/*Write new value to address and increment until break*/
+					sscanf(newData, "%02x", &data1);
+					*address = data1;
+					address+= 1;
+				}
+			}
 		}
-		address+= 1;
 	}
 }
