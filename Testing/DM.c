@@ -1,0 +1,58 @@
+#define  _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+
+int dm(unsigned int);
+
+int main()
+{
+	unsigned int add;
+	unsigned char strAdd[10];
+	
+	printf("Enter address: ");
+	gets(strAdd);
+	sscanf(strAdd, "%04x", &add);
+	dm(add);
+	
+	return 0;
+}
+
+int dm(unsigned int addTemp)
+{
+	
+	/*unsigned char getAddress[5];*/
+	unsigned char i = 0, j = 0, data;
+	char ascii[2], fillAscii[2] = {'.','\0'}, strAscii[15];
+	unsigned char *address;
+
+	address = (unsigned char *)addTemp;
+	
+	/*Print header*/
+	printf("\n\rAddress\t\tHex Data\t\t  ASCII\n\n\r");
+	
+	for(j = 0; j < 16; j++)
+	{
+		/*Clear the strings*/
+		strAscii[0] = '\0';
+		ascii[0] = '\0';
+		
+		printf(" %04x\t", address);
+
+		for(i = 0; i < 10; i++)
+		{
+			data = *(address+i);
+			printf("%02x ", data);
+			if (data <= 0x20 || data >= 0x7F)
+			{
+				strcat(strAscii, fillAscii);
+			}
+			else
+			{
+				sprintf(ascii, "%c", data);
+				strcat(strAscii, ascii);
+			}
+		}
+		printf("\t%s\n\r", strAscii);
+		address+= 10;
+	}		
+}
