@@ -21,19 +21,20 @@ int main()
 int mm(unsigned int addTemp)
 {
 	
-	/*unsigned char getAddress[10];*/
+	unsigned char *address;
 	unsigned char data, isBreak;
 	char newData[10];
-	unsigned char *address;
 	unsigned int data1;
-
+	
+	/* Assign pointer to incoming parameter value */
 	address = (unsigned char *)addTemp;
 	
 	printf("Please enter your new values. Use '.' to exit.\n\r");
 	printf("Address\tHex Data\n\n\r");
 
-	
+	/* Continue until quit */
 	while(1) {
+		
 		/*Acquire data and print with address*/
 		data = *address;
 		printf("%04x:\t%02x <- ", address, data);
@@ -44,23 +45,28 @@ int mm(unsigned int addTemp)
 		newData[2] = '\0'; /*Re-write null in case of overwrite later*/
 		gets(newData);
 		sscanf(newData, "%c", &isBreak);
+		
+		/* Check for quit */
 		if (isBreak == '.')
 		{
 			break;
 		}
+		/* Skip line */
 		if (isBreak == '\n')
 		{
-			/*Skip to next address*/
 			address+= 1;
 		}
 		else
 		{
+			/* Check if only one character input and validate */
 			if (newData[1] == '\0')
 			{
+				/* If not valid or is whitespace */
 				if (isxdigit(newData[0]) == 0 || newData[0] == ' ')
 				{
 					printf("Please enter a valid 8 bit hexadecimal value.\n\r");
 				}
+				/*Accept, format and increment pointer*/
 				else
 				{
 					sscanf(newData, "%02x", &data1);
@@ -68,8 +74,10 @@ int mm(unsigned int addTemp)
 					address+= 1;
 				}
 			}
+			/*Two digits or more entered, validate and process */
 			else
 			{
+				/* If not valid, whitespace or overwritten the null check */
 				if (isxdigit(newData[0]) == 0 || isxdigit(newData[1]) == 0 || newData[0] == ' ' || newData[1] == ' ' || newData[2] != '\0')
 				{
 					printf("Please enter a correct 8 bit hexadecimal value.\n\r");
@@ -84,4 +92,5 @@ int mm(unsigned int addTemp)
 			}
 		}
 	}
+	return(1);
 }

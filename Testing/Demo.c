@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 int demo();
+unsigned char mkeyscan();
 
 int main()
 {
@@ -10,8 +11,11 @@ int main()
 
 int demo()
 {
-	unsigned char *adctl, *adr1, data, *porta,*ddra, offset;
+	
+	unsigned char *adctl, *adr1, data, *porta,*ddra, offset, exit = '\0';
 	unsigned int delay, i=0;
+	
+	/* Assign pointers and values to ports and direction registers */
 	adctl=(unsigned char*)0x30;
 	adr1=(unsigned char*)0x31;
 	porta=(unsigned char *)0x00;
@@ -19,14 +23,19 @@ int demo()
 	*adctl=0x20;
 	*ddra=0xff;
 	offset = 0x0ff;
-
-	for(;;)
+	
+	printf("Press any key to stop demo.\n\r");
+	
+	/* Run until key press */
+	while(exit == '\0')
 	{
+		exit = mkeyscan();
 		while(((*adctl)&0x80)==0x00);
 		delay = *adr1 + offset;
+		
 		for(i = 0; i < delay; i++);
 		/*printf("Data from channel E0 is %02x, delay = %04x\n\r", *adr1, delay);*/ /*Debug line*/
-		*porta = 0x01;
+		*porta = 0x01; /*Write value to port A*/
 
 		for(i = 0; i < delay; i++);
 		*porta = 0x03;
@@ -49,6 +58,21 @@ int demo()
 		for(i = 0; i < delay; i++);
 		*porta = 0x09;
 	}
+	*porta = 0x00; /*Clear data on quit*/
+	return(1);
+}
 
-	return 1;
+unsigned char mkeyscan()
+{
+	unsigned char *scsr, *scdr, data;
+	/* Note no config needed for baud rate since already defined in monitor program*/
+	scsr = (unsigned char *)0x2e;
+	scdr = (unsigned char *)0x2f;
+	data = '\0';
+	/* if key has been pressed read key code else return NULL */
+	if (((*scsr) & 0x20) != 0x0)
+	{
+		data = *scdr;
+	}
+	return(data);
 }

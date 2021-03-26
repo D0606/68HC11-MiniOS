@@ -3,34 +3,22 @@
 #include <stdlib.h>
 #include <string.h>
 
-/************ Function Prototypes ************/
-int mainMenu();
 int loadFile();
-int displayMem(int mem);
-int modifyMem(int mem);
-int disassembleMem(int startMem, int endMem);
+int displayMem(unsigned int addTemp);
+int modifyMem(unsigned int addTemp);
+int disassembleMem(unsigned int addTemp1, unsigned int addTemp2);
 int demo();
-int errorCheck(unsigned char code, unsigned int valOne, unsigned int valTwo);
+int errorCheck(unsigned int code, unsigned int valOne, unsigned int valTwo);
 
-/**********************************************************
-Author: Daniel Truman
-Company: Staffordshire University
-Date: 03/03/21
-Version:		0.1
-Purpose:		
-Modifications:	0.1 - Initial menu design with rudimentary function calls
-Functions:		None
-Variables:		
-**********************************************************/
 int main()
 {
 	unsigned char strChoice[20], cmdChoice[5];
-	unsigned char launchCode, invalidChoice = 1, i = 0, strLength = 0, matched = 0;
+	unsigned char launchCode, invalidChoice = 1, i = 0, matched = 0;
 	unsigned int startRange = 0, endRange = 0;
-	
+
 	for(;;)
 	{
-		
+
 		while(invalidChoice == 1)
 		{
 			/*Clear variables*/
@@ -39,7 +27,7 @@ int main()
 			matched = 0;
 			cmdChoice[0] = '\0';
 			strChoice[0] = '\0';
-			
+
 			/*Print out main menu and display choices*/
 			printf("\n\n\r*#*#*#*#*#*#*#*#*#*#*#* 04908117 - Assignment Main Menu *#*#*#*#*#*#*#*#*#*#*#*\n\n\r");
 			printf("Please select from the following options:\n\n\r");
@@ -53,14 +41,14 @@ int main()
 			gets(strChoice); /*Receive user input*/
 			/*printf("\n\rString is: %s\n\r", strChoice);*/ /*Debug Line*/
 			sscanf(strChoice, "%s %04x %04x", &cmdChoice, &startRange, &endRange); /*Assign inputs to variables to check for validity*/
-			printf("Command: %s, length: %d, Start Range:  %04x, End Range: %04x\n\r", cmdChoice, strlen(cmdChoice), startRange, endRange);
-			
+			/*printf("Command: %s, length: %d, Start Range:  %04x, End Range: %04x\n\r", cmdChoice, strlen(cmdChoice), startRange, endRange);*/ /*Debug line*/
+
 			/*Process command string for accurate matching*/
 			for(i = 0; i < strlen(cmdChoice); i++)
 			{
 				cmdChoice[i] = toupper(cmdChoice[i]);
 			}
-			printf("Command entered was: %s\n\r", cmdChoice);
+			/*printf("Command entered was: %s\n\r", cmdChoice);*/ /*Debug line*/
 
 			/*Check if command was valid and process*/
 			if(strcmp(cmdChoice, "LF") == 0)
@@ -97,7 +85,8 @@ int main()
 			{
 				invalidChoice = errorCheck(5, startRange, endRange);
 			}
-			
+
+			/*If validated, call specified function with validated and applicable ranges*/
 			if(invalidChoice == 0)
 			{
 				switch(launchCode)
@@ -118,107 +107,48 @@ int main()
 						invalidChoice = demo();
 						break;
 					default:
-						printf("An error has occured -- Error: %u.\n\r", launchCode);
+						printf("An error has occured -- Error: %u.\n\r", launchCode); /*Debug line, should not be seen unless something has gone wrong.*/
 						invalidChoice = 1;
 						break;
 				}
 			}
 		}
 	}
-	return 0;
+	printf("Exceptional error occured! Codes: %d %d %d\n\r", matched, invalidChoice, launchCode); /*Debug line, should not be seen unless something has gone wrong.*/
+	return(0);
 }
 
-/**********************************************************
-Author: Daniel Truman
-Company: Staffordshire University
-Date: 03/03/21
-Version:		0.1
-Purpose:		
-Modifications:	0.1 - Initial menu design with rudimentary function calls
-Functions:		None
-Variables:		
-**********************************************************/
 int loadFile()
 {
 	printf("This should call function for Loading File, accepts no parameters.\n\r");
 	return 0;
 }
 
-/**********************************************************
-Author: Daniel Truman
-Company: Staffordshire University
-Date: 03/03/21
-Version:		0.1
-Purpose:		
-Modifications:	0.1 - Initial menu design with rudimentary function calls
-Functions:		None
-Variables:		
-**********************************************************/
-int displayMem(int mem)
+int displayMem(unsigned int mem)
 {
 	printf("This should call function for Displaying Memory, accepts one Memory parameter and displays a range from there. Current: %x\n\r", mem);
 	return 0;
 }
 
-/**********************************************************
-Author: Daniel Truman
-Company: Staffordshire University
-Date: 03/03/21
-Version:		0.1
-Purpose:		
-Modifications:	0.1 - Initial menu design with rudimentary function calls
-Functions:		None
-Variables:		
-**********************************************************/
-int modifyMem(int mem)
+int modifyMem(unsigned int mem)
 {
 	printf("This should call function for Modifying Memory, accepts one Memory parameter and allows changes one address at a time. Current: %x\n\r", mem);
 	return 0;
 }
 
-/**********************************************************
-Author: Daniel Truman
-Company: Staffordshire University
-Date: 03/03/21
-Version:		0.1
-Purpose:		
-Modifications:	0.1 - Initial menu design with rudimentary function calls
-Functions:		None
-Variables:		
-**********************************************************/
-int disassembleMem(int startMem, int endMem)
+int disassembleMem(unsigned int startMem, unsigned int endMem)
 {
 	printf("This should call function for Disassembling Memory, accepts two parameters that will show the disassembled code in that memory range. Current: %x-%x\n\r", startMem, endMem);
 	return 0;
 }
 
-/**********************************************************
-Author: Daniel Truman
-Company: Staffordshire University
-Date: 03/03/21
-Version:		0.1
-Purpose:		
-Modifications:	0.1 - Initial menu design with rudimentary function calls
-Functions:		None
-Variables:		
-**********************************************************/
 int demo()
 {
 	printf("This should call function for the Demo, accepts no parameters.\n\r");
 	return 0;
 }
 
-/**********************************************************
-Author: Daniel Truman
-Company: Staffordshire University
-Date: 03/03/21
-Version:		0.1
-Purpose:		
-Modifications:	0.1 - Initial menu design with rudimentary function calls
-Functions:		None
-Variables:		
-**********************************************************/
-int errorCheck(int code, int valOne, int valTwo)
+int errorCheck(unsigned int code, unsigned int valOne, unsigned int valTwo)
 {
 	printf("Command code: %u | Value one: %x | Value two: %x\n\r", code, valOne, valTwo);
 	return 0;

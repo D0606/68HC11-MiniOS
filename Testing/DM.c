@@ -6,30 +6,42 @@ int dm(unsigned int);
 
 int main()
 {
-	unsigned int add;
-	unsigned char strAdd[10];
+	unsigned int add = 0x7000, i;
+	unsigned char /*strAdd[10],*/ *asciiPtr;
 	
-	printf("Enter address: ");
+/*	printf("Enter address: ");
 	gets(strAdd);
 	sscanf(strAdd, "%04x", &add);
+	printf("Address: %04x", add);*/
+	
+	asciiPtr = (unsigned char *)add;
+	
+	for(i = 0; i < 256; i++)
+	{
+		*asciiPtr = i;
+		asciiPtr++;
+	}
+
 	dm(add);
+	dm(add + 0x00a0);
 	
 	return 0;
 }
 
 int dm(unsigned int addTemp)
 {
-	
-	/*unsigned char getAddress[5];*/
+
+	unsigned char *address;
 	unsigned char i = 0, j = 0, data;
 	char ascii[2], fillAscii[2] = {'.','\0'}, strAscii[15];
-	unsigned char *address;
 
+	/* Assign pointer to address*/
 	address = (unsigned char *)addTemp;
-	
+
 	/*Print header*/
 	printf("\n\rAddress\t\tHex Data\t\t  ASCII\n\n\r");
-	
+
+	/* Process through memory and display block */
 	for(j = 0; j < 16; j++)
 	{
 		/*Clear the strings*/
@@ -42,10 +54,12 @@ int dm(unsigned int addTemp)
 		{
 			data = *(address+i);
 			printf("%02x ", data);
+			/*Not recognised hex, so output '.' */
 			if (data <= 0x20 || data >= 0x7F)
 			{
 				strcat(strAscii, fillAscii);
 			}
+			/* Output hex char */
 			else
 			{
 				sprintf(ascii, "%c", data);
@@ -53,6 +67,7 @@ int dm(unsigned int addTemp)
 			}
 		}
 		printf("\t%s\n\r", strAscii);
-		address+= 10;
-	}		
+		address+= 10; /* Increment to next set on line */
+	}
+	return(1);	
 }

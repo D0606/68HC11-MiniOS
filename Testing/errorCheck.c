@@ -33,15 +33,16 @@ Variables:		unsigned char testInput[20] - Holds user entered test string
 **********************************************************/
 int ec(unsigned int code, unsigned int valOne, unsigned int valTwo)
 {
-	unsigned char errorCode=0;
+	unsigned char errorCode = 0;
 
-	printf("Code: %d, Start: %04x, End: %04x\n\r", code, valOne, valTwo);
+	/*printf("Code: %d, Start: %04x, End: %04x\n\r", code, valOne, valTwo);*/ /* Debug line */
 	
+	/* Match incoming value and validate for request */
 	switch(code)
 	{
 		case 0:
-			printf("Load File error checking...No accepted extra values.\n\r");
-			/*Check for 0 parameters*/
+			/*printf("Load File error checking...No accepted extra values.\n\r");*/ /* Debug line */
+			/* Check for 0 values on both parameters */
 			if(valOne != 0 || valTwo != 0)
 			{
 				errorCode = 1;
@@ -49,26 +50,26 @@ int ec(unsigned int code, unsigned int valOne, unsigned int valTwo)
 			}
 			else
 			{
-				errorCode = 0;
+				errorCode = 0; /* Return as valid */
 			}
 			break;
 		case 1:
-			printf("Display Memory error checking...Accepts start range only.\n\n");
-			/*Check for 0 value*/
+			/*printf("Display Memory error checking...Accepts start range only.\n\n");*/ /* Debug line */
+			/* Check for 0 values on both parameters */
 			if(valOne == 0)
 			{
 				errorCode = 1;
 				printf("This instruction requires a valid hexadecimal parameter, please follow syntax example.\n\r");
 				break;
 			}
-			/*Check for clear second parameter*/
+			/* Check for 0 value on second parameter */
 			if(valTwo != 0)
 			{
 				errorCode = 1;
 				printf("This instruction requires only one parameter, please follow syntax example.\n\r");
 				break;
 			}
-			/*Check for overall acceptable range*/
+			/* Check for overall acceptable range */
 			if(valOne < 0x0400 || valOne > 0x7DFF)
 			{
 				errorCode = 1;
@@ -81,23 +82,22 @@ int ec(unsigned int code, unsigned int valOne, unsigned int valTwo)
 			}
 			break;
 		case 2:
-			printf("Disassemble Memory error checking...Accepts start range and end range.\n\r");
-			/*Check for 0 value*/
+			/*printf("Modify Memory error checking...Accepts start range only.\n\r");*/ /* Debug line */
+			/* Check for 0 value */
 			if(valOne == 0)
 			{
 				errorCode = 1;
 				printf("This instruction requires a valid hexadecimal parameter, please follow syntax example.\n\r");
 				break;
 			}
-			printf("Modify Memory error checking...Accepts start range only.\n\r");
-			/*Check for clear second parameter*/
+			/* Check for clear second parameter */
 			if(valTwo != 0)
 			{
 				errorCode = 1;
 				printf("This instruction requires only one parameter, please follow syntax example.\n\r");
 				break;
 			}
-			/*Check for overall acceptable range*/
+			/* Check for overall acceptable range */
 			if(valOne < 0x0400 || valOne > 0x7DFF)
 			{
 				errorCode = 1;
@@ -110,29 +110,29 @@ int ec(unsigned int code, unsigned int valOne, unsigned int valTwo)
 			}
 			break;
 		case 3:
-			/*Check for 0 values*/
-			printf("Disassemble Memory error checking...Accepts start range and end range.\n\r");
+			/* Check for 0 values */
+			/*printf("Disassemble Memory error checking...Accepts start range and end range.\n\r");*/ /* Debug line */
 			if(valOne == 0 || valTwo == 0)
 			{
 				errorCode = 1;
 				printf("This instruction requires two parameters, please follow syntax example.\n\r");
 				break;
 			}
-			/*Check for overlap on range*/
+			/* Check for overlap on range */
 			if(valTwo <= valOne || valOne >= valTwo)
 			{
 				errorCode = 1;
 				printf("End range cannot be equal to or lower than start range.\n\r");
 				break;
 			}
-			/*Check for overall acceptable start range*/
+			/* Check for overall acceptable start range */
 			if(valOne < 0x0400 || valOne >= 0x7DFF)
 			{
 				errorCode = 1;
 				printf("This instruction only accepts start address ranges between 0400 and 7DFE.\n\r");
 				break;
 			}
-			/*Check for overall acceptable end range*/
+			/* Check for overall acceptable end range */
 			if(valTwo <= 0x400 || valTwo > 0x7DFF)
 			{
 				errorCode = 1;
@@ -145,8 +145,8 @@ int ec(unsigned int code, unsigned int valOne, unsigned int valTwo)
 			}
 			break;
 		case 4:
-			printf("Demo error checking...No accepted extra values.\n\r");
-			/*Check for 0 parameters*/
+			/*printf("Demo error checking...No accepted extra values.\n\r");*/ /* Debug line */
+			/* Check for 0 values on both parameters */
 			if(valOne != 0 || valTwo != 0)
 			{
 				errorCode = 1;
@@ -157,11 +157,12 @@ int ec(unsigned int code, unsigned int valOne, unsigned int valTwo)
 				errorCode = 0;
 			}
 			break;
+			/* Handle other possible cases */
 		default:
 			printf("An error has occured, no recognised command was selected.\n\r");
 			errorCode = 1;
 			break;
 	}
-	printf("errorCheck function return: %u.\n\r", errorCode);
+	/*printf("\n\rerrorCheck function return: %u.\n\r", errorCode);*/ /* Debug line */
 	return(errorCode);
 }

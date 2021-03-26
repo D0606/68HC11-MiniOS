@@ -30,14 +30,13 @@ int di(unsigned int addTemp1, unsigned int addTemp2)
 {
 	
 	struct opAssembler command[255], extraCommand[255];
-	unsigned char getStart[5], getEnd[5];
+	unsigned char *addStart, *addEnd;
 	unsigned char n, data, data1, data2, flagData, wait;
 	char temp[10], temp1[10], temp2[10];
-	unsigned char *addStart, *addEnd;
-	unsigned int addRange, addTemp;
+	unsigned int addRange;
 	long int i;
 
-	/*Initialse data*/
+	/*Initialse data for all assembly commands to be recognised*/
 	strcpy(command[0x1B].instruction,"ABA ");
 	command[0x1B].bytes = 0;
 	strcpy(command[0x1B].isValid, "Valid");
@@ -333,8 +332,8 @@ int di(unsigned int addTemp1, unsigned int addTemp2)
 	extraCommand[0xED].bytes = 1;
 	strcpy(extraCommand[0xED].isValid, "Valid");
 	
+	/* Assign pointers to addresses */
 	addStart = (unsigned char *)addTemp1;
-
 	addEnd = (unsigned char *)addTemp2;
 	
 	/*Set the max range and prep for the loop*/
@@ -353,36 +352,34 @@ int di(unsigned int addTemp1, unsigned int addTemp2)
 		data = *addStart;
 
 		printf("\n\r%x\t%02x", addStart, data);
-		flagData = *(addStart+1);
+		flagData = *(addStart+1); /* Look at next address value - used for validating 0x18 type commands */
 	
 		if (data == 0x18 && command[flagData].type == 18)
 		{
-			strcpy(temp, extraCommand[flagData].instruction); /*write 0x18 data to temp*/
-			data1 = *(addStart+1); /*get opcode*/
-			sprintf(temp1, "%02x", data1); /*write opcode to temp1*/
+			strcpy(temp, extraCommand[flagData].instruction); /* Write 0x18 data to temp */
+			data1 = *(addStart+1); /* Get opcode */
+			sprintf(temp1, "%02x", data1); /* Write opcode to temp1 */
 			
-			if(command[flagData].bytes == 1) /*Get extra data if a byte should be attached*/
+			if(command[flagData].bytes == 1) /* Get extra data if a byte should be attached */
 			{
-				data2 = *(addStart+2); /*get attached byte - all 0x18 codes are 1 byte*/
-				sprintf(temp2, "%02x", data2); /*byte written to temp2*/
-				strcat(temp1, temp2); /*data concatenated*/
-				i++; /*iterate past retrieved addresses*/
-				addStart++;
+				data2 = *(addStart+2); /* Get attached byte - all 0x18 codes are 1 byte */
+				sprintf(temp2, "%02x", data2); /* Byte written to temp2 */
+				strcat(temp1, temp2); /* Data concatenated */
+				i+= 1; /* Iterate past retrieved addresses */
+				addStart+= 1;
 			}
 			
-			i++; /*iterate past remaining addresses*/
-			addStart++;
-			
-			/*strcat(temp1, temp);*/
+			i+= 1; /* Iterate past remaining addresses */
+			addStart+= 1;
 			printf("%s\t\t%s%s", temp1, temp, temp2);
 		}
 	
-		/*look up string*/
-		if (strcmp(command[data].isValid, "Valid") == 0) /*Check valid tab*/
+		/* Look up string */
+		if (strcmp(command[data].isValid, "Valid") == 0) /* Check valid tab */
 		{
 				strcpy(temp, command[data].instruction);
 				
-			/*look up number of bytes next*/
+			/* Look up number of bytes next */
 			if (command[data].bytes == 2)
 			{
 				data1 = *(addStart+1);
@@ -390,41 +387,51 @@ int di(unsigned int addTemp1, unsigned int addTemp2)
 				data2 = *(addStart+2);
 				sprintf(temp2, "%02x", data2);
 				strcat(temp1, temp2);
-				i++;
-				i++;
-				addStart++;
-				addStart++;
+				i+= 2;
+				addStart+= 2;
 			}
 			
 			if (command[data].bytes == 1)
 			{
 				data1 = *(addStart+1);
 				sprintf(temp1, "%02x", data1);
-				i++;
-				addStart++;
+				i+= 1;
+				addStart+= 1;
 			}
 		
-			/*strcat(temp1, temp);*/
 			printf("%s\t\t%s%s", temp1, temp, temp1);
 			
 		}
 		
-		addStart++;
+		addStart+= 1;
 		
 		/*Page break here*/
 		n++;
 		if (n == 15)
 		{
-			printf("\n\n\r%ld/%u addresses displayed. Press any key to continue.\n\r", (i+1), addRange);
+			printf("\n\n\r%ld/%u addresses displayed. Press any key to continue or 'q' to stop.\n\r", (i + 1), addRange);
 			wait = '\0';
 			while (wait == '\0')
 			{
-				wait = mkeyscan();
+				wait = mkeyscan(); /* Wait for continue */
+				
 			}
 			n = 0;
-			printf("\n\rAddress\tHex Data\tAssembly\n\r");
+			
+			/* Don't print header if quitting */
+			if (wait != 'q')
+			{
+				printf("\n\rAddress\tHex Data\tAssembly\n\r");
+			}
+		}
+		
+		/* Quit on 'q' */
+		if (wait == 'q')
+		{
+			break;
 		}
 	}
+	return(1);
 }
 
 unsigned char mkeyscan()
