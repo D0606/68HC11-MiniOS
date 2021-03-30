@@ -15,7 +15,7 @@ int main()
 	gets(strAdd);
 	sscanf(strAdd, "%04x", &add);
 	mm(add);
-	return 0;	
+	return 0;
 }
 
 int mm(unsigned int addTemp)

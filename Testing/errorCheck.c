@@ -35,13 +35,13 @@ int ec(unsigned int code, unsigned int valOne, unsigned int valTwo)
 {
 	unsigned char errorCode = 0;
 
-	/*printf("Code: %d, Start: %04x, End: %04x\n\r", code, valOne, valTwo);*/ /* Debug line */
+	printf("Code: %d, Start: %04x, End: %04x\n\r", code, valOne, valTwo); /* Debug line */
 	
 	/* Match incoming value and validate for request */
 	switch(code)
 	{
 		case 0:
-			/*printf("Load File error checking...No accepted extra values.\n\r");*/ /* Debug line */
+			printf("Load File error checking...No accepted extra values.\n\r"); /* Debug line */
 			/* Check for 0 values on both parameters */
 			if(valOne != 0 || valTwo != 0)
 			{
@@ -54,7 +54,7 @@ int ec(unsigned int code, unsigned int valOne, unsigned int valTwo)
 			}
 			break;
 		case 1:
-			/*printf("Display Memory error checking...Accepts start range only.\n\n");*/ /* Debug line */
+			printf("Display Memory error checking...Accepts start range only.\n\n"); /* Debug line */
 			/* Check for 0 values on both parameters */
 			if(valOne == 0)
 			{
@@ -82,7 +82,7 @@ int ec(unsigned int code, unsigned int valOne, unsigned int valTwo)
 			}
 			break;
 		case 2:
-			/*printf("Modify Memory error checking...Accepts start range only.\n\r");*/ /* Debug line */
+			printf("Modify Memory error checking...Accepts start range only.\n\r"); /* Debug line */
 			/* Check for 0 value */
 			if(valOne == 0)
 			{
@@ -111,7 +111,7 @@ int ec(unsigned int code, unsigned int valOne, unsigned int valTwo)
 			break;
 		case 3:
 			/* Check for 0 values */
-			/*printf("Disassemble Memory error checking...Accepts start range and end range.\n\r");*/ /* Debug line */
+			printf("Disassemble Memory error checking...Accepts start range and end range.\n\r"); /* Debug line */
 			if(valOne == 0 || valTwo == 0)
 			{
 				errorCode = 1;
@@ -145,7 +145,7 @@ int ec(unsigned int code, unsigned int valOne, unsigned int valTwo)
 			}
 			break;
 		case 4:
-			/*printf("Demo error checking...No accepted extra values.\n\r");*/ /* Debug line */
+			printf("Demo error checking...No accepted extra values.\n\r"); /* Debug line */
 			/* Check for 0 values on both parameters */
 			if(valOne != 0 || valTwo != 0)
 			{
@@ -163,6 +163,6 @@ int ec(unsigned int code, unsigned int valOne, unsigned int valTwo)
 			errorCode = 1;
 			break;
 	}
-	/*printf("\n\rerrorCheck function return: %u.\n\r", errorCode);*/ /* Debug line */
+	printf("\n\rerrorCheck function return: %u.\n\r", errorCode); /* Debug line */
 	return(errorCode);
 }

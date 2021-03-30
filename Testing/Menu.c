@@ -84,6 +84,7 @@ int main()
 			if(matched != 1)
 			{
 				invalidChoice = errorCheck(5, startRange, endRange);
+				launchCode = 10;
 			}
 
 			/*If validated, call specified function with validated and applicable ranges*/
@@ -107,7 +108,7 @@ int main()
 						invalidChoice = demo();
 						break;
 					default:
-						printf("An error has occured -- Error: %u.\n\r", launchCode); /*Debug line, should not be seen unless something has gone wrong.*/
+						printf("An error has occured -- Error: %u.\n\r", launchCode);
 						invalidChoice = 1;
 						break;
 				}
@@ -132,13 +133,15 @@ int displayMem(unsigned int mem)
 
 int modifyMem(unsigned int mem)
 {
-	printf("This should call function for Modifying Memory, accepts one Memory parameter and allows changes one address at a time. Current: %x\n\r", mem);
+	printf("This should call function for Modifying Memory,");
+	printf("accepts one Memory parameter and allows changes one address at a time. Current: %x\n\r", mem);
 	return 0;
 }
 
 int disassembleMem(unsigned int startMem, unsigned int endMem)
 {
-	printf("This should call function for Disassembling Memory, accepts two parameters that will show the disassembled code in that memory range. Current: %x-%x\n\r", startMem, endMem);
+	printf("This should call function for Disassembling Memory, accepts two parameters that");
+	printf("will show the disassembled code in that memory range. Current: %x-%x\n\r", startMem, endMem);
 	return 0;
 }
 

@@ -12,7 +12,8 @@ int main()
 int demo()
 {
 	
-	unsigned char *adctl, *adr1, data, *porta,*ddra, offset, exit = '\0';
+	unsigned char *adctl, *adr1, *porta, *ddra; 
+	unsigned char offset, exit = '\0'; 
 	unsigned int delay, i=0;
 	
 	/* Assign pointers and values to ports and direction registers */
@@ -22,7 +23,7 @@ int demo()
 	ddra=(unsigned char *)0x01;
 	*adctl=0x20;
 	*ddra=0xff;
-	offset = 0x0ff;
+	offset = 0xff;
 	
 	printf("Press any key to stop demo.\n\r");
 	

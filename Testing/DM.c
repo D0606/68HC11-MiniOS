@@ -6,13 +6,13 @@ int dm(unsigned int);
 
 int main()
 {
-	unsigned int add = 0x7000, i;
-	unsigned char /*strAdd[10],*/ *asciiPtr;
+	unsigned int add = 0x7000, i, showAdd;
+	unsigned char strAdd[10], *asciiPtr;
 	
-/*	printf("Enter address: ");
+	printf("Enter address: ");
 	gets(strAdd);
-	sscanf(strAdd, "%04x", &add);
-	printf("Address: %04x", add);*/
+	sscanf(strAdd, "%04x", &showAdd);
+	printf("Data changed at address: %04x", add);
 	
 	asciiPtr = (unsigned char *)add;
 	
@@ -22,8 +22,8 @@ int main()
 		asciiPtr++;
 	}
 
-	dm(add);
-	dm(add + 0x00a0);
+	dm(showAdd);
+	dm(showAdd + 0x00a0);
 	
 	return 0;
 }

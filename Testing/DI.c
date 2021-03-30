@@ -338,7 +338,7 @@ int di(unsigned int addTemp1, unsigned int addTemp2)
 	
 	/*Set the max range and prep for the loop*/
 	addRange = addEnd - addStart;
-	printf("Range Hex: %x, Dec: %d\n\r", addRange, addRange);
+	printf("Range Hex: %x, Dec: %d\n\r", addRange, addRange); /* Debug line */
 	n = 0;
 	printf("\n\rAddress\tHex Data\tAssembly\n\r");
 	
@@ -377,7 +377,7 @@ int di(unsigned int addTemp1, unsigned int addTemp2)
 		/* Look up string */
 		if (strcmp(command[data].isValid, "Valid") == 0) /* Check valid tab */
 		{
-				strcpy(temp, command[data].instruction);
+			strcpy(temp, command[data].instruction);
 				
 			/* Look up number of bytes next */
 			if (command[data].bytes == 2)
